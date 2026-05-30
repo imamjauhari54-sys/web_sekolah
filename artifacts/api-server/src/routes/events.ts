@@ -42,10 +42,18 @@ router.post("/events", async (req, res): Promise<void> => {
     return;
   }
 
+  if (!parsed.data.title || !parsed.data.location || !parsed.data.date) {
+    res.status(400).json({ error: "title, location and date are required" });
+    return;
+  }
+
   const [event] = await db.insert(eventsTable).values({
-    ...parsed.data,
+    title: parsed.data.title,
+    location: parsed.data.location,
     date: new Date(parsed.data.date),
     endDate: parsed.data.endDate ? new Date(parsed.data.endDate) : null,
+    description: parsed.data.description,
+    category: parsed.data.category ?? "Umum",
   }).returning();
 
   res.status(201).json({

@@ -10,24 +10,6 @@ import {
 
 const router: IRouter = Router();
 
-router.get("/gallery", async (req, res): Promise<void> => {
-  const query = ListGalleryQueryParams.safeParse(req.query);
-  if (!query.success) {
-    res.status(400).json({ error: query.error.message });
-    return;
-  }
-
-  let rows = await db.select().from(galleryTable);
-  if (query.data.category) {
-    rows = rows.filter((r) => r.category === query.data.category);
-  }
-
-  res.json(ListGalleryResponse.parse(rows.map((r) => ({
-    ...r,
-    takenAt: r.takenAt ? r.takenAt.toISOString() : null,
-  }))));
-});
-
 router.post("/gallery", async (req, res): Promise<void> => {
   const parsed = CreateGalleryItemBody.safeParse(req.body);
   if (!parsed.success) {
@@ -35,8 +17,15 @@ router.post("/gallery", async (req, res): Promise<void> => {
     return;
   }
 
+  if (!parsed.data.title || !parsed.data.imageUrl) {
+    res.status(400).json({ error: "title and imageUrl are required" });
+    return;
+  }
+
   const [item] = await db.insert(galleryTable).values({
-    ...parsed.data,
+    title: parsed.data.title,
+    imageUrl: parsed.data.imageUrl,
+    category: parsed.data.category ?? "Umum",
     takenAt: parsed.data.takenAt ? new Date(parsed.data.takenAt) : null,
   }).returning();
 
