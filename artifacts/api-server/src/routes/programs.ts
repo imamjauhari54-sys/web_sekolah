@@ -23,7 +23,19 @@ router.post("/programs", async (req, res): Promise<void> => {
     return;
   }
 
-  const [program] = await db.insert(programsTable).values(parsed.data).returning();
+  if (!parsed.data.name || !parsed.data.level || !parsed.data.description) {
+    res.status(400).json({ error: "name, level and description are required" });
+    return;
+  }
+
+  const [program] = await db.insert(programsTable).values({
+    name: parsed.data.name,
+    level: parsed.data.level,
+    description: parsed.data.description,
+    duration: parsed.data.duration,
+    imageUrl: parsed.data.imageUrl,
+  }).returning();
+
   res.status(201).json(program);
 });
 
