@@ -17,7 +17,19 @@ router.post("/contact", async (req, res): Promise<void> => {
     return;
   }
 
-  const [message] = await db.insert(contactTable).values(parsed.data).returning();
+  if (!parsed.data.name || !parsed.data.email || !parsed.data.subject || !parsed.data.message) {
+    res.status(400).json({ error: "name, email, subject and message are required" });
+    return;
+  }
+
+  const [message] = await db.insert(contactTable).values({
+    name: parsed.data.name,
+    email: parsed.data.email,
+    subject: parsed.data.subject,
+    message: parsed.data.message,
+    phone: parsed.data.phone,
+  }).returning();
+
   res.status(201).json({ ...message, createdAt: message.createdAt.toISOString() });
 });
 
