@@ -1,7 +1,6 @@
 {
   "version": 2,
-  "buildCommand": "pnpm install && pnpm --filter @workspace/db build 2>/dev/null || true && pnpm --filter @workspace/api-zod build 2>/dev/null || true && pnpm --filter @workspace/api-server build",
-  "outputDirectory": "artifacts/api-server/dist",
+  "buildCommand": "pnpm install && pnpm --filter @workspace/api-server build",
   "functions": {
     "artifacts/api-server/dist/index.mjs": {
       "runtime": "nodejs20.x"
