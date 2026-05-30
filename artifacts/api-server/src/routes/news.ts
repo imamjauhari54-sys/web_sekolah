@@ -49,10 +49,19 @@ router.post("/news", async (req, res): Promise<void> => {
     return;
   }
 
+  if (!parsed.data.title || !parsed.data.content) {
+    res.status(400).json({ error: "title and content are required" });
+    return;
+  }
+
   const [article] = await db
     .insert(newsTable)
     .values({
-      ...parsed.data,
+      title: parsed.data.title,
+      content: parsed.data.content,
+      excerpt: parsed.data.excerpt,
+      category: parsed.data.category ?? "Umum",
+      imageUrl: parsed.data.imageUrl,
       publishedAt: parsed.data.publishedAt ? new Date(parsed.data.publishedAt) : new Date(),
     })
     .returning();
