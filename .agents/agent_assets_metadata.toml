@@ -1,0 +1,8 @@
+uploads = []
+generated = []
+
+[[outputs]]
+id = "xKNKoMjtvLm-qYsTQ8-On"
+uri = "file://project.tar.gz"
+type = "unspecified"
+title = "SD Nusantara — Source Code (project.tar.gz)"
